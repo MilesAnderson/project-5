@@ -1,3 +1,10 @@
+Author: Miles Anderson
+Email: mander20@uoregon.edu
+Description: This project provides a brevets control calculator. The algorithm takes the total distance of the brevets, the distance of the control, and the start time of the race. It uses these to compute the opening and closing times for the checkpoint at the given control. To start the program you should make sure you are in the brevets subdirectory so docker can read the Dockerfile. Then type in the docker build and run commands, specifying the port within the docker run command. Once on the webpage the user can choose the total distance of the brevets race and the start time of the race. The user can then enter the distance of the first control (either in miles or kilometers). After hitting enter the opening and closing times for that control will be displayed.
+
+Control Calculation rules:
+For calculating control times there are set maximum and minimum speeds which are divided by the control distance. Which maximum or minimum speed is used depends on the distance of the control from the beginning control. We use the maximum speeds for finding the opening times and the minimum speeds for finding the closing times. 
+
 # UOCIS322 - Project 5 #
 Brevet time calculator with MongoDB!
 
