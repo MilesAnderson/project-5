@@ -9,6 +9,8 @@ services:
           - "5001:5000"
         depends_on:
           - mongodb
+        environment:
+          MONGODB_HOSTNAME: mongodb
     mongodb:
-        image: 427dd68dd642a1b4527c2e8e48f16cb2a117c4429b854e64d42f2749ec961bc6
+        image: mongo:5.0.5
           

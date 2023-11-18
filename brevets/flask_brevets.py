@@ -12,6 +12,10 @@ import config
 
 import logging
 
+from pymongo import MongoClient
+from flask import Flask, redirect, url_for, request, render_template, jsonify
+import os
+
 ###
 # Globals
 ###
@@ -22,12 +26,15 @@ CONFIG = config.configuration()
 # Pages
 ###
 
+# Connect MongoDB
+client = MongoClient("mongodb://" + os.environ['MONGODB_HOSTNAME'], 27017)
+db = client.mydb
 
 @app.route("/")
 @app.route("/index")
 def index():
     app.logger.debug("Main page entry")
-    return flask.render_template('calc.html')
+    return flask.render_template('calc.html', items=list(db.myposts.find()))
 
 
 @app.errorhandler(404)
@@ -66,6 +73,28 @@ def _calc_times():
     result = {"open": open_time, "close": close_time}
     return flask.jsonify(result=result)
 
+@app.route('/submit_data/', methods=['POST', 'GET'])
+def submit_data():
+    if request.method == 'POST':
+        item_doc = {
+            'distance': request.form['distance'],
+            'begin_date': request.form['begin_date'],
+            'km': request.form['km'],
+            'miles': request.form['miles'],
+            'open': request.form['open'],
+            'close': request.form['close']
+        }
+        db.myposts.insert_one(item_doc)
+        return jsonify({"message": "Data submitted successfully"})
+    elif request.method == 'GET':
+        return jsonify({"message": "GET not supported"})
+
+    return redirect(url_for('index'))
+
+@app.route('/display/', methods=['GET'])
+def display():
+    data = list(db.myposts.find())
+    return jsonify({"data": data})
 
 #############
 

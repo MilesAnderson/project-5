@@ -68,10 +68,10 @@
                </div>
                <!-- columns 5 to 10 -->
                <div class="col-md-10">
-                  <button type="button" onclick="submit()">Submit</button>
+                  <button type="button" onclick="hitSubmit()">Submit</button>
                </div>
                <div class="col-md-11">
-                  <button type="button" class="display">Display</button>
+                  <button type="button" onclick="display()">Display</button>
                </div>
             </div>
             <!-- row -->
@@ -126,8 +126,45 @@
             // you need to pass much more!
             // View flask_brevets.py for details.
 
-            function submit(){
-               
+            function hitSubmit() {
+               console.log("Submit Button was hit");
+
+               var formData = $('form[role="form"]').serialize();
+               console.log("Form Data: ", formData);
+
+               $.getJSON("/submit_data/", formData, function(data) {
+                  console.log("From calc.html: Data submitted successfully");
+               })
+               .fail(function(jqXHR, textStatus, errorThrown) {
+                  console.error("Error submitting data:", textStatus, errorThrown);
+                  console.log("Response text: ", jqXHR.responseText);
+               });
+
+               var inputFields = document.querySelectorAll('input');
+
+               inputFields.forEach(function(input) {
+                  input.value = '';
+               })
+
+               $("#begin_date").val("2021-01-01T00:00");
+            }
+
+            function display() {
+               console.log("Display Button was hit");
+
+               $.getJSON("/display/", function(response) {
+                  console.log("Response received:", response);
+
+                  var dataContainer = $(".container");
+                  
+                  response.data.forEach(function(item) {
+                     var html = '<p>Miles: ' + item.miles + ', Km: ' + item.km + ', Open: ' + item.open + ', Close: ' + item.close + '</p>';
+                     dataContainer.append(html);
+                  });
+               })
+               .fail(function(jqXHR, textStatus, errorThrown) {
+                  console.error("Error fetching data:", textStatus, errorThrown);
+               });
             }
 
             function calc_times(control) {
